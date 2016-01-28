@@ -1,0 +1,33 @@
+Users
+ - id
+ - username
+ - address (optional)
+ - tel_nbr
+ * has_many Reservations
+
+Theaters
+ - id
+ - name
+ - max_seats
+ * has_many Performances
+
+Movie
+ - id
+ - name
+ * has_many Performances
+
+Performance
+ - id
+ - movie_id
+ - theater_id
+ - performance_date
+ * belongs_to Movie
+ * belongs_to Theater
+
+Reservations
+ - id
+ - reservation_number (eller använd id?)
+ - user_id
+ - performance_id
+ * belongs_to User
+ * belongs_to Performance
