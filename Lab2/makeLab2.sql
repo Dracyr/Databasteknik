@@ -29,7 +29,7 @@ CREATE TABLE theaters (
 
 CREATE TABLE movies (
   id          integer NOT NULL UNIQUE AUTO_INCREMENT,
-  name        varchar(255) NOT NULL,
+  name        varchar(255) NOT NULL UNIQUE,
   PRIMARY KEY (id)
 );
 
@@ -41,7 +41,7 @@ CREATE TABLE performances (
   PRIMARY KEY (id),
   FOREIGN KEY (movie_id) REFERENCES movies(id),
   FOREIGN KEY (theater_id) REFERENCES theaters(id),
-  CONSTRAINT unique_movie_date UNIQUE(movie_id, theater_id, performance_date)
+  CONSTRAINT unique_movie_date UNIQUE(movie_id, performance_date)
 );
 
 CREATE TABLE reservations (
@@ -54,13 +54,15 @@ CREATE TABLE reservations (
   -- CHECK ((SELECT (max_seats - reserved_seats) FROM seat_reservations WHERE performance_id = performance_id) > 0)
 );
 
-DROP VIEW if exists seat_reservations;
-CREATE VIEW seat_reservations AS
-SELECT count(*) AS reserved_seats, performance_id, max_seats
-FROM reservations
-INNER JOIN performances ON reservations.performance_id = performances.id
-INNER JOIN theaters ON performances.theater_id = theaters.id
-GROUP BY performance_id;
+-- Was used to check that reservations did not exceed theater seats, men behövdes inte
+
+-- DROP VIEW if exists seat_reservations;
+-- CREATE VIEW seat_reservations AS
+-- SELECT count(*) AS reserved_seats, performance_id, max_seats
+-- FROM reservations
+-- INNER JOIN performances ON reservations.performance_id = performances.id
+-- INNER JOIN theaters ON performances.theater_id = theaters.id
+-- GROUP BY performance_id;
 
 -- We will do a lot of inserts, so we start a transaction to make it faster.
 
@@ -89,10 +91,10 @@ insert into performances values
 (2, 2, 1, '2016-01-01'),
 (3, 3, 1, '2016-01-01'),
 (4, 4, 1, '2016-01-01'),
-(5, 1, 2, '2016-01-01'),
-(6, 2, 2, '2016-01-01'),
-(7, 3, 2, '2016-01-01'),
-(8, 4, 2, '2016-01-01'),
+(5, 1, 2, '2016-01-03'),
+(6, 2, 2, '2016-01-02'),
+(7, 3, 2, '2016-01-02'),
+(8, 4, 2, '2016-01-02'),
 (9, 1, 2, '2016-01-02');
 
 -- id, user_id, performance_id
