@@ -56,13 +56,13 @@ CREATE TABLE reservations (
 
 -- Was used to check that reservations did not exceed theater seats, men behövdes inte
 
--- DROP VIEW if exists seat_reservations;
--- CREATE VIEW seat_reservations AS
--- SELECT count(*) AS reserved_seats, performance_id, max_seats
--- FROM reservations
--- INNER JOIN performances ON reservations.performance_id = performances.id
--- INNER JOIN theaters ON performances.theater_id = theaters.id
--- GROUP BY performance_id;
+DROP VIEW if exists seat_reservations;
+CREATE VIEW seat_reservations AS
+SELECT count(*) AS reserved_seats, performance_id, max_seats, theaters.name AS theater_name
+FROM reservations
+INNER JOIN performances ON reservations.performance_id = performances.id
+INNER JOIN theaters ON performances.theater_id = theaters.id
+GROUP BY performance_id;
 
 -- We will do a lot of inserts, so we start a transaction to make it faster.
 
@@ -117,3 +117,9 @@ commit;
 
 set FOREIGN_KEY_CHECKS = 1;
 
+select * 
+from performances 
+left outer join movies on movies.id = performances.movie_id 
+left join theaters on performances.theater_id = theaters.id
+where movies.name = 'Star Wars' 
+AND performance_date = ;
