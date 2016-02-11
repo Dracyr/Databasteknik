@@ -31,3 +31,11 @@ Reservations
  - performance_id
  * belongs_to User
  * belongs_to Performance
+
+
+# Relational Model
+User(id, username, address, tel_nbr)
+Theater(id, name, max_seats)
+Movie(id, name)
+Performance(id, movie_id, theater_id)
+Reservation(id, reservation_number, user_id)
