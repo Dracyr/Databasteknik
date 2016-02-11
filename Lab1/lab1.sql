@@ -1,63 +1,94 @@
 -- a
-SELECT firstName, lastName FROM Students;
+SELECT firstName, lastName 
+FROM Students;
 
 -- b 
-SELECT firstName, lastName FROM Students ORDER BY lastName, firstName;
+SELECT firstName, lastName 
+FROM Students 
+ORDER BY lastName, firstName;
 
 -- c
-SELECT * FROM Students WHERE substring(pNbr, 1, 2) = 85;
+SELECT * FROM Students 
+WHERE substring(pNbr, 1, 2) = 85;
 
 -- d
-SELECT firstName, pNbr FROM Students WHERE mod(substring(pNbr, 10, 1), 2) = 0;
+SELECT firstName, pNbr 
+FROM Students 
+WHERE mod(substring(pNbr, 10, 1), 2) = 0;
 
 -- e
-SELECT COUNT(*) FROM Students;
+SELECT COUNT(*) 
+FROM Students;
 
 -- f
-SELECT * FROM Courses WHERE substring(courseCode, 1, 3) = "FMA";
+SELECT * 
+FROM Courses 
+WHERE substring(courseCode, 1, 3) = "FMA";
 
 -- g
-SELECT * FROM Courses WHERE credits > 7.5;
+SELECT * 
+FROM Courses 
+WHERE credits > 7.5;
 
 -- h
-SELECT count(*) FROM Courses GROUP BY level;
+SELECT count(*) 
+FROM Courses 
+GROUP BY level;
 
 -- i
-SELECT courseCode FROM TakenCourses WHERE pNbr = "910101-1234";
+SELECT courseCode 
+FROM TakenCourses 
+WHERE pNbr = "910101-1234";
 
 -- j
-SELECT courseName, credits FROM Courses NATURAL JOIN TakenCourses WHERE pNbr = "910101-1234";
+SELECT courseName, credits 
+FROM Courses 
+NATURAL JOIN TakenCourses 
+WHERE pNbr = "910101-1234";
 
 -- k
-SELECT sum(credits) FROM Courses NATURAL JOIN TakenCourses WHERE pNbr = "910101-1234";
+SELECT sum(credits) 
+FROM Courses 
+NATURAL JOIN TakenCourses 
+WHERE pNbr = "910101-1234";
 
 -- l
-SELECT avg(grade) FROM TakenCourses WHERE pNbr = "910101-1234";
+SELECT avg(grade) 
+FROM TakenCourses 
+WHERE pNbr = "910101-1234";
 
 -- m
-SELECT courseCode FROM TakenCourses NATURAL JOIN Students WHERE firstName = "Eva" AND lastName = "Alm";
+SELECT courseCode 
+FROM TakenCourses 
+NATURAL JOIN Students 
+WHERE firstName = "Eva" 
+  AND lastName = "Alm";
 
 SELECT courseName, credits 
 FROM Courses 
 NATURAL JOIN TakenCourses 
 NATURAL JOIN Students 
-WHERE firstName = "Eva" AND lastName = "Alm";
+WHERE firstName = "Eva" 
+  AND lastName = "Alm";
 
 SELECT sum(credits) 
 FROM Courses 
 NATURAL JOIN TakenCourses 
 NATURAL JOIN Students 
-WHERE firstName = "Eva" AND lastName = "Alm";
+WHERE firstName = "Eva" 
+  AND lastName = "Alm";
 
 SELECT avg(grade) 
 FROM TakenCourses 
 NATURAL JOIN Students 
-WHERE firstName = "Eva" AND lastName = "Alm";
+WHERE firstName = "Eva" 
+  AND lastName = "Alm";
 
 -- n
 SELECT firstName, lastName 
 FROM TakenCourses 
-RIGHT OUTER JOIN Students ON Students.pNbr = TakenCourses.pNbr 
+RIGHT OUTER JOIN Students 
+  ON Students.pNbr = TakenCourses.pNbr 
 WHERE courseCode IS NULL;
 
 -- o
