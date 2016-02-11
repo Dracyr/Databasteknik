@@ -143,5 +143,23 @@ public class Database {
 
         return new Show(movie, date, theater, freeSeats);
     }
+
+    public boolean login(String username) throws SQLException {
+        Statement stmt = null;
+
+        String query = "select count(*) as user_count from users where username = '" + username + "'";
+        try	{
+            stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            rs.first();
+            return rs.getInt("user_count") == 1;
+        } catch (SQLException e) {
+            System.out.println("Shit gone wrong :(");
+            e.printStackTrace();
+        } finally {
+            if (stmt != null) { stmt.close(); }
+        }
+        return false;
+    }
 }
 
