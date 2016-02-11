@@ -116,10 +116,3 @@ commit;
 -- And re-enable foreign key checks.
 
 set FOREIGN_KEY_CHECKS = 1;
-
-select * 
-from performances 
-left outer join movies on movies.id = performances.movie_id 
-left join theaters on performances.theater_id = theaters.id
-where movies.name = 'Star Wars' 
-AND performance_date = ;
