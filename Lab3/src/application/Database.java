@@ -123,11 +123,9 @@ public class Database {
 
         Statement stmt = null;
         String query =
-                "SELECT max_seats, theaters.name AS theater_name " +
-                "FROM performances " +
-                "LEFT OUTER JOIN movies ON movies.id = performances.movie_id " +
-                "LEFT JOIN theaters on theaters.id = performances.theater_id " +
-                "WHERE movies.name = '" + movie + "' AND " +
+                "SELECT reserved_seats, max_seats, theater_name  " +
+                "FROM seat_reservations " +
+                "WHERE movie_name = '" + movie + "' AND " +
                 "performance_date = '" + date + "'";
 
         try	{
@@ -135,7 +133,7 @@ public class Database {
             ResultSet rs = stmt.executeQuery(query);
             rs.first();
             theater = rs.getString("theater_name");
-            freeSeats = rs.getInt("max_seats");
+            freeSeats = rs.getInt("max_seats") - rs.getInt("reserved_seats");
         } catch (SQLException e) {
             System.out.println("Shit gone wrong :(");
             e.printStackTrace();

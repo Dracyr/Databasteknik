@@ -58,11 +58,12 @@ CREATE TABLE reservations (
 
 DROP VIEW if exists seat_reservations;
 CREATE VIEW seat_reservations AS
-SELECT count(*) AS reserved_seats, performance_id, max_seats, theaters.name AS theater_name
-FROM reservations
-INNER JOIN performances ON reservations.performance_id = performances.id
-INNER JOIN theaters ON performances.theater_id = theaters.id
-GROUP BY performance_id;
+SELECT performances.id, count(reservations.id) AS reserved_seats, max_seats, theaters.name AS theater_name, movies.name AS movie_name, performance_date
+FROM performances
+LEFT OUTER JOIN reservations ON reservations.performance_id = performances.id
+LEFT JOIN theaters ON performances.theater_id = theaters.id
+LEFT OUTER JOIN movies ON movies.id = performances.movie_id
+GROUP BY performances.id;
 
 -- We will do a lot of inserts, so we start a transaction to make it faster.
 
