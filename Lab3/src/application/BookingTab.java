@@ -68,10 +68,21 @@ public class BookingTab {
 				(event) -> {
 					String movie = moviesList.getSelectionModel().getSelectedItem();
 					String date = datesList.getSelectionModel().getSelectedItem();
+					int bookingNumber = 0;
+					try {
+						bookingNumber = db.book(movie, date, CurrentUser.instance().getCurrentUserId());
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 					/* --- TODO: should attempt to book a ticket via the database --- */
 					/* --- do not forget to report booking number! --- */
 					/* --- update the displayed details (free seats) --- */
-					report("Booked one ticket to "+movie+" on "+date);
+					if (bookingNumber > 0) {
+						report("Booked one ticket to "+movie+" on "+date + " with number " + bookingNumber);
+						fillShow(movie, date);
+					} else {
+						report("Could not book ticket to "+movie+" on "+date);
+					}
 				});
 		
 		report("Ready.");
@@ -139,7 +150,7 @@ public class BookingTab {
 	}
 		
 	public void userChanged() {
-		fillStatus(CurrentUser.instance().getCurrentUserId());
+		fillStatus(CurrentUser.instance().getCurrentUserName());
 		fillNamesList();
 		fillDatesList(null);
 		fillShow(null,null);

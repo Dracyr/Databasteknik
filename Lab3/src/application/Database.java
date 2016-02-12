@@ -98,13 +98,18 @@ public class Database {
 
     public List<String> getDatesForMovie(String movie) throws SQLException {
         ArrayList<String> dateList = new ArrayList<>();
-        Statement stmt = null;
+        PreparedStatement preparedStatement = null;
         String query =
-                "select performance_date from performances left join movies on movies.id = performances.movie_id where movies.name = '" + movie + "'";
+                "SELECT performance_date " +
+                "FROM performances " +
+                "LEFT JOIN movies ON movies.id = performances.movie_id " +
+                "WHERE movies.name = ?";
 
         try	{
-            stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(query);
+            preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, movie);
+            ResultSet rs = preparedStatement.executeQuery();
+
             while (rs.next()) {
                 dateList.add(String.valueOf(rs.getDate("performance_date")));
             }
@@ -112,7 +117,7 @@ public class Database {
             System.out.println("Shit gone wrong :(");
             e.printStackTrace();
         } finally {
-            if (stmt != null) { stmt.close(); }
+            if (preparedStatement != null) { preparedStatement.close(); }
         }
         return dateList;
     }
@@ -144,22 +149,66 @@ public class Database {
         return new Show(movie, date, theater, freeSeats);
     }
 
-    public boolean login(String username) throws SQLException {
-        Statement stmt = null;
+    public int login(String username) throws SQLException {
+        PreparedStatement preparedStatement = null;
 
-        String query = "select count(*) as user_count from users where username = '" + username + "'";
+        String query = "select count(*) as user_count, id from users where username = ?";
         try	{
-            stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(query);
+            preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, username);
+            ResultSet rs = preparedStatement.executeQuery();
             rs.first();
-            return rs.getInt("user_count") == 1;
+            if (rs.getInt("user_count") == 1) {
+                return rs.getInt("id");
+            }
         } catch (SQLException e) {
             System.out.println("Shit gone wrong :(");
             e.printStackTrace();
         } finally {
+            if (preparedStatement != null) { preparedStatement.close(); }
+        }
+        return 0;
+    }
+
+    public int book(String movie, String date, int currentUserId) throws SQLException {
+        // Only run queries when we want it
+        conn.setAutoCommit(false);
+        Statement stmt = null;
+        // insert new booking
+        String query =
+                "SELECT id, reserved_seats, max_seats, theater_name  " +
+                        "FROM seat_reservations " +
+                        "WHERE movie_name = '" + movie + "' AND " +
+                        "performance_date = '" + date + "'";
+        int reservationId = 0;
+        try {
+            stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            rs.first();
+            int performance_id = rs.getInt("id");
+            int freeSeats = rs.getInt("max_seats") - rs.getInt("reserved_seats");
+
+            if (freeSeats > 0) {
+                query = "INSERT INTO reservations(user_id, performance_id) values " +
+                        "("+ currentUserId + ", " + performance_id + ")";
+                stmt.executeUpdate(query);
+
+                query = "select id from reservations order by id desc limit 1";
+                rs = stmt.executeQuery(query);
+                rs.first();
+                reservationId = rs.getInt("id");
+                conn.commit();
+            } else {
+                conn.rollback();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
             if (stmt != null) { stmt.close(); }
         }
-        return false;
+
+        conn.setAutoCommit(true);
+        return reservationId;
     }
 }
 

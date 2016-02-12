@@ -13,13 +13,14 @@ public class CurrentUser {
     /**
      * The name of the current user.
      */
-    private String currentUserId;
+    private String currentUserName;
+    private int currentUserId;
         
     /**
      * Create a CurrentUser object.
      */
     private CurrentUser() {
-        currentUserId = null;
+        currentUserName = null;
     }
         
     /**
@@ -39,7 +40,7 @@ public class CurrentUser {
      * @return true if a user has logged in, false otherwise.
      */
     public boolean isLoggedIn() {
-        return currentUserId != null;
+        return currentUserName != null;
     }
         
     /** 
@@ -48,8 +49,8 @@ public class CurrentUser {
      *
      * @return The user id of the current user.
      */
-    public String getCurrentUserId() {
-        return currentUserId == null ? "<none>" : currentUserId;
+    public String getCurrentUserName() {
+        return currentUserName == null ? "<none>" : currentUserName;
     }
         
     /**
@@ -57,7 +58,12 @@ public class CurrentUser {
      *
      * @param userId The user id of the new user.
      */
-    public void loginAs(String userId) {
+    public void loginAs(String username, int userId) {
+        currentUserName = username;
         currentUserId = userId;
+    }
+
+    public int getCurrentUserId() {
+        return currentUserId;
     }
 }
