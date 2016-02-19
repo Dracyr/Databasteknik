@@ -34,7 +34,8 @@ public class Main extends Application {
 			// opening database connection
 			Map<String, String> env = System.getenv();
 			System.out.println(env.get("EDA216_DB_USER"));
-			if(!db.openConnection(env.get("EDA216_DB_USER"), env.get("EDA216_DB_PASS"))) {
+			//if(!db.openConnection(env.get("EDA216_DB_USER"), env.get("EDA216_DB_PASS"))) {
+			if(!db.openConnection("db104", "mem801of")) {
 				Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("Database error");
 				alert.setHeaderText(null);

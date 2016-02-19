@@ -35,9 +35,10 @@ public class LoginTab {
             String uname = username.getText();
 
             try {
-                if(db.login(uname)) {
+                int userId = db.login(uname);
+                if(userId != 0) {
                     // setting the user name
-                    CurrentUser.instance().loginAs(uname);
+                    CurrentUser.instance().loginAs(uname, userId);
 
                     // inform the user about logging in
                     actiontarget.setText("Sign in user "+uname);
